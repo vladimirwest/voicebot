@@ -8,8 +8,8 @@ import requests
 from wit import Wit
 from contextlib import closing
 
-token='336b280042d94d9076bccbf63de2c22c8cd07bd2b5173bd7e2e22ff55e38be3e69e19bac0b32745765735'
-wit_token = 'RUFRTLTN4IILNBFUPMOHRUJMEPXFZYKO'
+token=os.environ["token"]
+wit_token = os.environ["wit_token"]
 vk = vk_api.VkApi(token = token, api_version='5.73') # Токен Vk Api
 values = {'out' : 0, 'count' : 100, 'time_offset' : 60} # Данные для обновления информации о входящих сообщениях
 
