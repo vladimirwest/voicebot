@@ -1,0 +1,17 @@
+Flask==0.12
+Flask-Cors==3.0.2
+HeapDict==1.0.0
+html5lib==0.9999999
+jsonschema==2.5.1
+nbconvert==4.2.0
+pathlib2==2.2.0
+psutil==5.0.1
+py==1.4.32
+pyOpenSSL==16.2.0
+pyowm==2.8.0
+pytils==0.3
+requests==2.18.4
+urllib3==1.22
+vk==2.0.2
+vk-api==10.1
+wit==5.1.0
