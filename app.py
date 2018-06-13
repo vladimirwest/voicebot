@@ -16,19 +16,46 @@ values = {'out' : 0, 'count' : 100, 'time_offset' : 60} # Данные для о
 
 
 def recognize_voice(data, link, token, wit_token):
-    user_id = data['user_id']
-    client = Wit(wit_token)
-    doc = requests.get(link)
-    resp = None
-    with closing(doc):
-        try:
-            resp = client.speech(doc.content, None, {'Content-Type': 'audio/mpeg3'})
-            resp = str(resp['_text'])
-        except:
-            resp = "Не удалось распознать сообщение"
-        finally:
-            vk.method('messages.send', {'user_id': user_id, 'message': resp})
-    return
+    from wit import Wit
+	chunk_step = 230000
+	interval = 10000    
+	user_id = data['user_id']
+	client = Wit(wit_token)
+	doc = requests.get(link)
+	resp = None
+	with closing(doc):
+		try:
+			if(len(doc.content)>300000):
+				msg = "Точность при распозновании больших голосовых сообщений не гарантируется. Сообщение распознается по частям. \n\n"
+				sound = doc.content
+				current_point=interval
+				amount = len(sound) // chunk_step
+				step = len(sound) // (amount+1)
+				for i in range(amount):
+					current_part = sound[current_point-interval:current_point+step]
+					current_point+=step
+					resp = client.speech(current_part, None, {'Content-Type': 'audio/mpeg3'})
+					msg = msg + str(resp['_text']) + '\n' + '...' + '\n'
+				current_part = sound[current_point-1000:len(sound)]
+				resp = client.speech(current_part, None, {'Content-Type': 'audio/mpeg3'})
+				msg = msg + str(resp['_text'])
+				resp = msg
+			else: 
+				resp = client.speech(doc.content, None, {'Content-Type': 'audio/mpeg3'})
+				resp = str(resp['_text'])
+		except:
+			resp = "Не удалось распознать сообщение"
+		finally:
+			if(len(resp)>3500):
+				cnt = 0
+				amount_msg = len(sound) // 3500
+				for i in range(amount_msg):
+					vk.method('messages.send', {'user_id': user_id, 'message': resp[cnt:cnt+3500]})
+					cnt = cnt + 3500
+				vk.method('messages.send', {'user_id': user_id, 'message': resp[cnt:len(resp)]})
+			else:
+				vk.method('messages.send', {'user_id': user_id, 'message': resp})
+		return
 
 
 def main():
