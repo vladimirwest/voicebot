@@ -42,7 +42,7 @@ def recognize_voice(data, link, token, wit_token):
 				resp = msg
 			else: 
 				resp = client.speech(doc.content, None, {'Content-Type': 'audio/mpeg3'})
-				resp = str(resp['_text'])
+				resp = "Вот, что получилось распознать:\n\n" + str(resp['_text'])
 		except:
 			resp = "Не удалось распознать сообщение"
 		finally:
