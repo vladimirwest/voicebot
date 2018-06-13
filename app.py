@@ -41,14 +41,39 @@ def main():
         #Отвечаем
 		for item in response['items']:
 			data = item
-			while(data.get('fwd_messages',"")!=""):
-				data = data.get('fwd_messages')
-				data=dict(data[0])
-			if(data.get('attachments',"")!=""):
-				a = data['attachments']
-				if a[0]['type'] == 'doc':
-					if a[0]['doc']['type'] == 5:
-						recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
+			for data in response["items"]:
+				if(data.get('attachments',"")!=""):
+					a = data['attachments']
+					if a[0]['type'] == 'doc':
+						if a[0]['doc']['type'] == 5:
+							recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
+                
+			cycle=0
+			while(cycle!=1):
+				if(data.get('fwd_messages',"")!=""):
+					data = data.get('fwd_messages')
+					if(len(data)>1):
+						cycle = 1
+						for i in range(len(data)):
+							data[i] = dict(data[i])
+							data_i = data[i]
+							if(data_i.get('attachments',"")!=""):
+								a = data_i['attachments']
+								if a[0]['type'] == 'doc':
+									if a[0]['doc']['type'] == 5:
+										recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
+							
+					elif(len(data)==1):
+						data = dict(data[0])
+						if(data.get('attachments',"")!=""):
+							cycle = 1
+							a = data['attachments']
+							if a[0]['type'] == 'doc':
+								if a[0]['doc']['type'] == 5:
+									recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
+				else:
+					cycle = 1
+    			
 						
 if __name__ == '__main__':
     main()
