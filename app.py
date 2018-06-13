@@ -16,7 +16,6 @@ values = {'out' : 0, 'count' : 100, 'time_offset' : 60} # Данные для о
 
 
 def recognize_voice(data, link, token, wit_token):
-    from wit import Wit
 	chunk_step = 230000
 	interval = 10000    
 	user_id = data['user_id']
