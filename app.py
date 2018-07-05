@@ -10,8 +10,8 @@ from contextlib import closing
 
 token = str(os.environ["TOKEN"])
 wit_token = str(os.environ["WIT_TOKEN"])
-vk = vk_api.VkApi(token = token, api_version='5.73') # Токен Vk Api
-values = {'out' : 0, 'count' : 100, 'time_offset' : 60} # Данные для обновления информации о входящих сообщениях
+vk = vk_api.VkApi(token = token, api_version='5.80') # Токен Vk Api
+values = {'offset' : 0, 'filter' : "unread"} # Данные для обновления информации о входящих сообщениях
 
 
 
@@ -60,19 +60,17 @@ def recognize_voice(data, link, token, wit_token):
 def main():
 	while True: # Бесконечный цикл
 		time.sleep(1) # Задержка
-		response = vk.method('messages.get', values) # Получаем список сообщений
-        # Смотрим, какием сообщения новые
-		if response['items']:
-			values['last_message_id'] = response['items'][0]['id']
+		response = vk.method('messages.getDialogs', values) # Получаем список сообщений
         #Отвечаем
 		for item in response['items']:
+			item = dict(item)
+			item = item.get('message')
 			data = item
-			for data in response["items"]:
-				if(data.get('attachments',"")!=""):
-					a = data['attachments']
-					if a[0]['type'] == 'doc':
-						if a[0]['doc']['type'] == 5:
-							recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
+			if(data.get('attachments',"")!=""):
+				a = data['attachments']
+				if a[0]['type'] == 'doc':
+					if a[0]['doc']['type'] == 5:
+						recognize_voice(item, a[0]['doc']['preview']['audio_msg']['link_mp3'], token, wit_token)
                 
 			cycle=0
 			while(cycle!=1):
