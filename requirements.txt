@@ -1,7 +1,7 @@
 Flask==0.12
 Flask-Cors==3.0.2
 HeapDict==1.0.0
-html5lib==0.9999999
+html5lib==0.999999999
 jsonschema==2.5.1
 nbconvert==4.2.0
 pathlib2==2.2.0
